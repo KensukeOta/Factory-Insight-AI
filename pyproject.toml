@@ -7,7 +7,13 @@ authors = [
     { name = "KensukeOta", email = "bump_kensuke_miwa@yahoo.ne.jp" }
 ]
 requires-python = ">=3.12"
-dependencies = []
+dependencies = [
+    "jupyter>=1.1.1",
+    "matplotlib>=3.11.2",
+    "numpy>=2.5.3",
+    "pandas>=3.0.6",
+    "scikit-learn>=1.9.1",
+]
 
 [project.scripts]
 factory-insight-ai = "factory_insight_ai:main"
