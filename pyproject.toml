@@ -1,0 +1,17 @@
+[project]
+name = "factory-insight-ai"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+authors = [
+    { name = "KensukeOta", email = "bump_kensuke_miwa@yahoo.ne.jp" }
+]
+requires-python = ">=3.12"
+dependencies = []
+
+[project.scripts]
+factory-insight-ai = "factory_insight_ai:main"
+
+[build-system]
+requires = ["uv_build>=0.12.23,<0.13.0"]
+build-backend = "uv_build"
