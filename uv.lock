@@ -308,6 +308,7 @@ name = "factory-insight-ai"
 version = "0.1.0"
 source = { editable = "." }
 dependencies = [
+    { name = "joblib" },
     { name = "jupyter" },
     { name = "lightgbm" },
     { name = "matplotlib" },
@@ -326,6 +327,7 @@ dev = [
 
 [package.metadata]
 requires-dist = [
+    { name = "joblib", specifier = ">=1.6.0" },
     { name = "jupyter", specifier = ">=1.1.1" },
     { name = "lightgbm", specifier = ">=4.7.0" },
     { name = "matplotlib", specifier = ">=3.11.2" },
