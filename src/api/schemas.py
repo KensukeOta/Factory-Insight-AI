@@ -59,3 +59,27 @@ class MaintenanceRecordRead(SQLModel):
     machine_id: UUID
     performed_at: datetime
     description: str
+
+
+class DashboardSummary(SQLModel):
+    total_machines: int
+    active_machines: int
+    high_risk_machines: int
+    total_predictions: int
+
+
+class HighRiskMachineRead(SQLModel):
+    machine_id: UUID
+    machine_name: str
+    equipment_type: str
+    failure_probability: float
+    predicted_at: datetime
+
+
+class RecentPredictionRead(SQLModel):
+    id: UUID
+    machine_id: UUID
+    machine_name: str
+    failure_probability: float
+    predicted_failure: bool
+    predicted_at: datetime
