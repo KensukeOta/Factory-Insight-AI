@@ -46,3 +46,16 @@ class PredictionRead(SQLModel):
     predicted_failure: bool
     model_version: str
     predicted_at: datetime
+
+
+class MaintenanceRecordCreate(SQLModel):
+    description: str = Field(min_length=1, max_length=2000)
+
+
+class MaintenanceRecordRead(SQLModel):
+    model_config = ConfigDict(from_attributes=True)
+
+    id: UUID
+    machine_id: UUID
+    performed_at: datetime
+    description: str
