@@ -9,6 +9,7 @@ authors = [
 requires-python = ">=3.12,<3.13"
 dependencies = [
     "alembic>=1.20.0",
+    "fastapi>=0.143.0",
     "joblib>=1.6.0",
     "jupyter>=1.1.1",
     "lightgbm>=4.7.0",
@@ -19,6 +20,7 @@ dependencies = [
     "scikit-learn>=1.9.1",
     "shap==0.53.0rc0",
     "sqlmodel>=0.0.48",
+    "uvicorn[standard]>=0.54.0",
 ]
 
 [project.scripts]
@@ -30,6 +32,7 @@ build-backend = "uv_build"
 
 [dependency-groups]
 dev = [
+    "httpx>=0.28.1",
     "ipykernel>=7.4.0",
     "pytest>=9.1.1",
     "ruff>=0.16.10",
