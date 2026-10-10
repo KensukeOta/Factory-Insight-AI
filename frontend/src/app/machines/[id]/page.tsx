@@ -4,6 +4,10 @@ import { Suspense } from "react";
 
 import { getMachine } from "@/lib/api";
 
+import SensorReadingForm from "@/components/sensors/SensorReadingForm";
+import SensorReadingHistory from "@/components/sensors/SensorReadingHistory";
+import PredictionHistory from "@/components/sensors/PredictionHistory";
+
 type MachineDetailPageProps = {
   params: Promise<{ id: string }>;
 };
@@ -66,7 +70,39 @@ async function MachineDetail({ machineId }: { machineId: string }) {
 async function MachineDetailContent({ params }: MachineDetailPageProps) {
   const { id } = await params;
 
-  return <MachineDetail machineId={id} />;
+  return (
+    <div className="space-y-6">
+      <MachineDetail machineId={id} />
+
+      <SensorReadingForm machineId={id} />
+
+      <Suspense
+        fallback={
+          <div
+            role="status"
+            className="rounded-xl border border-slate-200 bg-white p-6 text-sm text-slate-500"
+          >
+            センサーデータ履歴を読み込み中...
+          </div>
+        }
+      >
+        <SensorReadingHistory machineId={id} />
+      </Suspense>
+
+      <Suspense
+        fallback={
+          <div
+            role="status"
+            className="rounded-xl border border-slate-200 bg-white p-6 text-sm text-slate-500"
+          >
+            故障予測履歴を読み込み中...
+          </div>
+        }
+      >
+        <PredictionHistory machineId={id} />
+      </Suspense>
+    </div>
+  );
 }
 
 export default function MachineDetailPage({ params }: MachineDetailPageProps) {
