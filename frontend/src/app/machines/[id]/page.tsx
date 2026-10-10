@@ -8,6 +8,9 @@ import SensorReadingForm from "@/components/sensors/SensorReadingForm";
 import SensorReadingHistory from "@/components/sensors/SensorReadingHistory";
 import PredictionHistory from "@/components/sensors/PredictionHistory";
 
+import MaintenanceRecordForm from "@/components/maintenance/MaintenanceRecordForm";
+import MaintenanceRecordHistory from "@/components/maintenance/MaintenanceRecordHistory";
+
 type MachineDetailPageProps = {
   params: Promise<{ id: string }>;
 };
@@ -100,6 +103,21 @@ async function MachineDetailContent({ params }: MachineDetailPageProps) {
         }
       >
         <PredictionHistory machineId={id} />
+      </Suspense>
+
+      <MaintenanceRecordForm machineId={id} />
+
+      <Suspense
+        fallback={
+          <div
+            role="status"
+            className="rounded-xl border border-slate-200 bg-white p-6 text-sm text-slate-500"
+          >
+            メンテナンス履歴を読み込み中...
+          </div>
+        }
+      >
+        <MaintenanceRecordHistory machineId={id} />
       </Suspense>
     </div>
   );

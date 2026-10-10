@@ -234,3 +234,108 @@ export async function getAllPredictions(): Promise<AllPredictionsResult> {
     predictions,
   };
 }
+
+export type MaintenanceRecordCreate = {
+  description: string;
+};
+
+export type MaintenanceRecord = {
+  id: string;
+  machine_id: string;
+  performed_at: string;
+  description: string;
+};
+
+export async function getMaintenanceRecords(
+  machineId: string,
+): Promise<MaintenanceRecord[]> {
+  return fetchApi<MaintenanceRecord[]>(
+    `/api/machines/${encodeURIComponent(machineId)}/maintenance`,
+  );
+}
+
+export async function createMaintenanceRecord(
+  machineId: string,
+  payload: MaintenanceRecordCreate,
+): Promise<MaintenanceRecord> {
+  const response = await fetch(
+    `${API_BASE_URL}/api/machines/${encodeURIComponent(machineId)}/maintenance`,
+    {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(payload),
+      cache: "no-store",
+      signal: AbortSignal.timeout(5000),
+    },
+  );
+
+  if (!response.ok) {
+    throw new Error(`Failed to create maintenance record: ${response.status}`);
+  }
+
+  return (await response.json()) as MaintenanceRecord;
+}
+
+export async function getMaintenanceRecord(
+  recordId: string,
+): Promise<MaintenanceRecord | null> {
+  const response = await fetch(
+    `${API_BASE_URL}/api/maintenance/${encodeURIComponent(recordId)}`,
+    {
+      cache: "no-store",
+      signal: AbortSignal.timeout(5000),
+    },
+  );
+
+  if (response.status === 404) {
+    return null;
+  }
+
+  if (!response.ok) {
+    throw new Error(`Failed to fetch maintenance record: ${response.status}`);
+  }
+
+  return (await response.json()) as MaintenanceRecord;
+}
+
+export type MaintenanceRecordWithMachine = MaintenanceRecord & {
+  machine_name: string;
+  equipment_type: string;
+};
+
+export type AllMaintenanceRecordsResult = {
+  machines: Machine[];
+  records: MaintenanceRecordWithMachine[];
+};
+
+export async function getAllMaintenanceRecords(): Promise<AllMaintenanceRecordsResult> {
+  const machines = await getMachines();
+
+  const recordGroups = await Promise.all(
+    machines.map(async (machine) => {
+      const records = await getMaintenanceRecords(machine.id);
+
+      return records.map(
+        (record): MaintenanceRecordWithMachine => ({
+          ...record,
+          machine_name: machine.name,
+          equipment_type: machine.equipment_type,
+        }),
+      );
+    }),
+  );
+
+  const records = recordGroups
+    .flat()
+    .sort(
+      (a, b) =>
+        new Date(b.performed_at).getTime() - new Date(a.performed_at).getTime(),
+    );
+
+  return {
+    machines,
+    records,
+  };
+}

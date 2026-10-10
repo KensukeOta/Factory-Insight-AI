@@ -2,7 +2,11 @@
 
 import { revalidatePath } from "next/cache";
 
-import { createPrediction, createSensorReading } from "@/lib/api";
+import {
+  createPrediction,
+  createSensorReading,
+  createMaintenanceRecord,
+} from "@/lib/api";
 import type { ProductType, SensorReadingCreate } from "@/lib/api";
 
 export type CreateSensorReadingState = {
@@ -132,4 +136,49 @@ export async function createPredictionAction(
     error: null,
     success: "故障予測を実行しました。",
   };
+}
+
+export type MaintenanceFormState = {
+  success: boolean;
+  message: string;
+};
+
+export async function registerMaintenanceAction(
+  machineId: string,
+  _previousState: MaintenanceFormState,
+  formData: FormData,
+): Promise<MaintenanceFormState> {
+  void _previousState;
+
+  const description = String(formData.get("description") ?? "").trim();
+
+  if (description.length === 0) {
+    return {
+      success: false,
+      message: "作業内容を入力してください。",
+    };
+  }
+
+  if (description.length > 2000) {
+    return {
+      success: false,
+      message: "作業内容は2000文字以内で入力してください。",
+    };
+  }
+
+  try {
+    await createMaintenanceRecord(machineId, { description });
+
+    revalidatePath(`/machines/${machineId}`);
+
+    return {
+      success: true,
+      message: "メンテナンス記録を登録しました。",
+    };
+  } catch {
+    return {
+      success: false,
+      message: "メンテナンス記録の登録に失敗しました。",
+    };
+  }
 }
