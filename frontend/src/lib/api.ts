@@ -194,3 +194,43 @@ export async function createPrediction(readingId: string): Promise<Prediction> {
 
   return (await response.json()) as Prediction;
 }
+
+export type PredictionWithMachine = Prediction & {
+  machine_name: string;
+  equipment_type: string;
+};
+
+export type AllPredictionsResult = {
+  machines: Machine[];
+  predictions: PredictionWithMachine[];
+};
+
+export async function getAllPredictions(): Promise<AllPredictionsResult> {
+  const machines = await getMachines();
+
+  const predictionGroups = await Promise.all(
+    machines.map(async (machine) => {
+      const predictions = await getPredictions(machine.id);
+
+      return predictions.map(
+        (prediction): PredictionWithMachine => ({
+          ...prediction,
+          machine_name: machine.name,
+          equipment_type: machine.equipment_type,
+        }),
+      );
+    }),
+  );
+
+  const predictions = predictionGroups
+    .flat()
+    .sort(
+      (a, b) =>
+        new Date(b.predicted_at).getTime() - new Date(a.predicted_at).getTime(),
+    );
+
+  return {
+    machines,
+    predictions,
+  };
+}
