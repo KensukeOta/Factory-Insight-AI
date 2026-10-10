@@ -112,3 +112,85 @@ export async function createMachine(payload: MachineCreate): Promise<Machine> {
 
   return (await response.json()) as Machine;
 }
+
+export type ProductType = "L" | "M" | "H";
+
+export type SensorReadingCreate = {
+  product_type: ProductType;
+  air_temperature: number;
+  process_temperature: number;
+  rotational_speed: number;
+  torque: number;
+  tool_wear: number;
+};
+
+export type SensorReading = SensorReadingCreate & {
+  id: string;
+  machine_id: string;
+  measured_at: string;
+};
+
+export type Prediction = {
+  id: string;
+  machine_id: string;
+  sensor_reading_id: string;
+  failure_probability: number;
+  predicted_failure: boolean;
+  model_version: string;
+  predicted_at: string;
+};
+
+export async function getSensorReadings(
+  machineId: string,
+): Promise<SensorReading[]> {
+  return fetchApi<SensorReading[]>(
+    `/api/machines/${encodeURIComponent(machineId)}/readings`,
+  );
+}
+
+export async function createSensorReading(
+  machineId: string,
+  payload: SensorReadingCreate,
+): Promise<SensorReading> {
+  const response = await fetch(
+    `${API_BASE_URL}/api/machines/${encodeURIComponent(machineId)}/readings`,
+    {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(payload),
+      cache: "no-store",
+      signal: AbortSignal.timeout(5000),
+    },
+  );
+
+  if (!response.ok) {
+    throw new Error(`Failed to create sensor reading: ${response.status}`);
+  }
+
+  return (await response.json()) as SensorReading;
+}
+
+export async function getPredictions(machineId: string): Promise<Prediction[]> {
+  return fetchApi<Prediction[]>(
+    `/api/machines/${encodeURIComponent(machineId)}/predictions`,
+  );
+}
+
+export async function createPrediction(readingId: string): Promise<Prediction> {
+  const response = await fetch(
+    `${API_BASE_URL}/api/readings/${encodeURIComponent(readingId)}/predict`,
+    {
+      method: "POST",
+      cache: "no-store",
+      signal: AbortSignal.timeout(30000),
+    },
+  );
+
+  if (!response.ok) {
+    throw new Error(`Failed to create prediction: ${response.status}`);
+  }
+
+  return (await response.json()) as Prediction;
+}
