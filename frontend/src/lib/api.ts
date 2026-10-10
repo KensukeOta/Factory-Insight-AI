@@ -57,3 +57,58 @@ export async function getHighRiskMachines(): Promise<HighRiskMachine[]> {
 export async function getRecentPredictions(): Promise<RecentPrediction[]> {
   return fetchApi<RecentPrediction[]>("/api/dashboard/recent-predictions");
 }
+
+export type Machine = {
+  id: string;
+  name: string;
+  equipment_type: string;
+  status: string;
+  created_at: string;
+};
+
+export type MachineCreate = {
+  name: string;
+  equipment_type: string;
+};
+
+export async function getMachines(): Promise<Machine[]> {
+  return fetchApi<Machine[]>("/api/machines");
+}
+
+export async function getMachine(machineId: string): Promise<Machine | null> {
+  const response = await fetch(
+    `${API_BASE_URL}/api/machines/${encodeURIComponent(machineId)}`,
+    {
+      cache: "no-store",
+      signal: AbortSignal.timeout(5000),
+    },
+  );
+
+  if (response.status === 404) {
+    return null;
+  }
+
+  if (!response.ok) {
+    throw new Error(`Failed to fetch machine: ${response.status}`);
+  }
+
+  return (await response.json()) as Machine;
+}
+
+export async function createMachine(payload: MachineCreate): Promise<Machine> {
+  const response = await fetch(`${API_BASE_URL}/api/machines`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(payload),
+    cache: "no-store",
+    signal: AbortSignal.timeout(5000),
+  });
+
+  if (!response.ok) {
+    throw new Error(`Failed to create machine: ${response.status}`);
+  }
+
+  return (await response.json()) as Machine;
+}
