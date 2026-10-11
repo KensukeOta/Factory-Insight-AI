@@ -1,5 +1,6 @@
 import { getPredictions } from "@/lib/api";
 import type { Prediction } from "@/lib/api";
+import { formatProbability } from "@/lib/formatProbability";
 
 type PredictionHistoryProps = {
   machineId: string;
@@ -58,7 +59,7 @@ export default async function PredictionHistory({
                   </td>
 
                   <td className="px-4 py-3 font-semibold">
-                    {(prediction.failure_probability * 100).toFixed(1)}%
+                    {formatProbability(prediction.failure_probability)}
                   </td>
 
                   <td className="px-4 py-3">

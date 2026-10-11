@@ -9,6 +9,8 @@ import {
   XAxis,
   YAxis,
 } from "recharts";
+import { formatChartProbability } from "@/lib/formatProbability";
+import { getProbabilityAxisMax, getProbabilityTicks } from "@/lib/chartAxis";
 
 export type FailureProbabilityChartData = {
   id: string;
@@ -39,6 +41,11 @@ export default function FailureProbabilityLineChart({
     );
   }
 
+  const maxProbability = Math.max(...data.map((item) => item.probability));
+
+  const axisMax = getProbabilityAxisMax(maxProbability);
+  const ticks = getProbabilityTicks(axisMax);
+
   return (
     <div>
       <div className="h-80 w-full">
@@ -62,16 +69,13 @@ export default function FailureProbabilityLineChart({
             />
 
             <YAxis
-              domain={[
-                0,
-                (dataMax: number) =>
-                  dataMax === 0
-                    ? 1
-                    : Math.min(100, Math.max(0.01, dataMax * 1.25)),
-              ]}
-              tickFormatter={(value: number) => `${Number(value.toFixed(2))}%`}
+              type="number"
+              domain={[0, axisMax]}
+              ticks={ticks}
+              allowDecimals
+              tickFormatter={formatChartProbability}
               tick={{ fontSize: 12 }}
-              width={55}
+              width={90}
             />
 
             <Tooltip
@@ -79,7 +83,7 @@ export default function FailureProbabilityLineChart({
                 dateFormatter.format(new Date(Number(value)))
               }
               formatter={(value) => [
-                `${Number(value ?? 0).toFixed(2)}%`,
+                formatChartProbability(Number(value ?? 0)),
                 "故障確率",
               ]}
             />
