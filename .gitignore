@@ -17,3 +17,6 @@ wheels/
 
 .ruff_cache
 .pytest_cache
+
+backups/
+scripts/cleanup_old_demo.sql
