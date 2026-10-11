@@ -4,6 +4,9 @@ import ApiStatus from "@/components/dashboard/ApiStatus";
 import HighRiskMachines from "@/components/dashboard/HighRiskMachines";
 import RecentPredictions from "@/components/dashboard/RecentPredictions";
 import SummaryCards from "@/components/dashboard/SummaryCards";
+import FailureRiskDistribution from "@/components/dashboard/FailureRiskDistribution";
+import MachineRiskComparison from "@/components/dashboard/MachineRiskComparison";
+import FailureProbabilityTrend from "@/components/dashboard/FailureProbabilityTrend";
 
 function LoadingCard() {
   return (
@@ -34,6 +37,20 @@ export default function DashboardPage() {
 
       <Suspense fallback={<LoadingCard />}>
         <SummaryCards />
+      </Suspense>
+
+      <div className="grid gap-6 xl:grid-cols-2">
+        <Suspense fallback={<LoadingCard />}>
+          <FailureRiskDistribution />
+        </Suspense>
+
+        <Suspense fallback={<LoadingCard />}>
+          <MachineRiskComparison />
+        </Suspense>
+      </div>
+
+      <Suspense fallback={<LoadingCard />}>
+        <FailureProbabilityTrend />
       </Suspense>
 
       <div className="grid gap-6 xl:grid-cols-2">
