@@ -1,6 +1,6 @@
 import { getRecentPredictions } from "@/lib/api";
 import type { RecentPrediction } from "@/lib/api";
-import { formatProbability } from "@/lib/format";
+import { formatProbability } from "@/lib/formatProbability";
 
 export default async function RecentPredictions() {
   let predictions: RecentPrediction[];

@@ -1,6 +1,7 @@
 import Link from "next/link";
 
 import type { PredictionWithMachine } from "@/lib/api";
+import { formatProbability } from "@/lib/formatProbability";
 
 type PredictionHistoryTableProps = {
   predictions: PredictionWithMachine[];
@@ -46,7 +47,7 @@ export default function PredictionHistoryTable({
               </td>
 
               <td className="px-4 py-3 font-semibold text-slate-900">
-                {(prediction.failure_probability * 100).toFixed(1)}%
+                {formatProbability(prediction.failure_probability)}
               </td>
 
               <td className="px-4 py-3">

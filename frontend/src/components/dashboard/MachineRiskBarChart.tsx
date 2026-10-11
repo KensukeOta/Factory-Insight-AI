@@ -11,6 +11,8 @@ import {
   XAxis,
   YAxis,
 } from "recharts";
+import { formatChartProbability } from "@/lib/formatProbability";
+import { getProbabilityAxisMax, getProbabilityTicks } from "@/lib/chartAxis";
 
 export type MachineRiskChartData = {
   machineId: string;
@@ -36,10 +38,8 @@ export default function MachineRiskBarChart({
 
   const maxProbability = Math.max(...data.map((item) => item.probability));
 
-  const axisMax =
-    maxProbability === 0
-      ? 1
-      : Math.min(100, Math.max(0.01, maxProbability * 1.25));
+  const axisMax = getProbabilityAxisMax(maxProbability);
+  const ticks = getProbabilityTicks(axisMax);
 
   return (
     <div>
@@ -58,7 +58,9 @@ export default function MachineRiskBarChart({
             <XAxis
               type="number"
               domain={[0, axisMax]}
-              tickFormatter={(value: number) => `${Number(value.toFixed(2))}%`}
+              ticks={ticks}
+              allowDecimals
+              tickFormatter={formatChartProbability}
               tick={{ fontSize: 11 }}
             />
 
@@ -71,7 +73,7 @@ export default function MachineRiskBarChart({
 
             <Tooltip
               formatter={(value) => [
-                `${Number(value ?? 0).toFixed(4)}%`,
+                formatChartProbability(Number(value ?? 0)),
                 "故障確率",
               ]}
             />
@@ -87,7 +89,9 @@ export default function MachineRiskBarChart({
               <LabelList
                 dataKey="probability"
                 position="right"
-                formatter={(value) => `${Number(value ?? 0).toFixed(2)}%`}
+                formatter={(value) =>
+                  formatChartProbability(Number(value ?? 0))
+                }
                 style={{ fontSize: 11, fill: "#475569" }}
               />
             </Bar>

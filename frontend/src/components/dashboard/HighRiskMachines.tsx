@@ -1,6 +1,6 @@
 import { getHighRiskMachines } from "@/lib/api";
 import type { HighRiskMachine } from "@/lib/api";
-import { formatProbability } from "@/lib/format";
+import { formatProbability } from "@/lib/formatProbability";
 
 export default async function HighRiskMachines() {
   let machines: HighRiskMachine[];
