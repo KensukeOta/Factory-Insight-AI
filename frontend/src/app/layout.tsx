@@ -7,9 +7,38 @@ import Sidebar from "@/components/layout/Sidebar";
 
 import "./globals.css";
 
+const siteUrl = "https://factory-insight-ai-kensuke.vercel.app";
+
+const title = "Factory Insight AI";
+const description =
+  "機械学習による設備故障予測と予防保全を支援するダッシュボード";
+
 export const metadata: Metadata = {
-  title: "Factory Insight AI",
-  description: "機械学習による設備故障予測と予防保全を支援するダッシュボード",
+  metadataBase: new URL(siteUrl),
+  title,
+  description,
+  openGraph: {
+    type: "website",
+    locale: "ja_JP",
+    url: siteUrl,
+    siteName: title,
+    title,
+    description,
+    images: [
+      {
+        url: "/og-image.png",
+        width: 1200,
+        height: 630,
+        alt: "Factory Insight AI - 設備故障予測ダッシュボード",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title,
+    description,
+    images: ["/og-image.png"],
+  },
 };
 
 export default function RootLayout({
