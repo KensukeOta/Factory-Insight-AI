@@ -1,4 +1,7 @@
+import os
+
 from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
 
 from src.api.routers.dashboard import router as dashboard_router
 from src.api.routers.machines import router as machines_router
@@ -10,6 +13,20 @@ app = FastAPI(
     title="Factory Insight AI API",
     description="Predictive maintenance and equipment management API",
     version="0.1.0",
+)
+
+cors_origins = [
+    origin.strip()
+    for origin in os.getenv("CORS_ORIGINS", "http://localhost:3000").split(",")
+    if origin.strip()
+]
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=cors_origins,
+    allow_credentials=False,
+    allow_methods=["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
+    allow_headers=["*"],
 )
 
 app.include_router(machines_router)

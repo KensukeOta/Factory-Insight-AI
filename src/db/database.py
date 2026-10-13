@@ -11,6 +11,9 @@ def get_database_url() -> str:
     if not url:
         raise RuntimeError("DATABASE_URL environment variable is required")
 
+    if url.startswith("postgresql://"):
+        url = url.replace("postgresql://", "postgresql+psycopg://", 1)
+
     return url
 
 
